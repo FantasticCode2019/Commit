@@ -19,11 +19,11 @@ public class IndexController {
         Cookie[] cookies = request.getCookies();
         if(cookies == null) return "index";
         for(Cookie cookie : cookies){
-            System.out.println(cookie.getName());
+            System.out.println(cookie.getName()+"="+cookie.getValue());
             if((cookie.getName()).equals("token")){
                 String token = cookie.getValue();
+                System.out.println("second&&&&&&"+token);
                 User user = userMapper.findUserByToken(token);
-                System.out.println(user.getName());
                 if(user != null)
                     request.getSession().setAttribute("user",user);
                 break;

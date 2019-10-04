@@ -16,10 +16,10 @@ public class GithubProvider {
 
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");
         OkHttpClient client = new OkHttpClient();
-        RequestBody body = RequestBody.create(mediaType, JSON.toJSONString(accessTokenDTO));
+        RequestBody bo = RequestBody.create(mediaType, JSON.toJSONString(accessTokenDTO));
         Request request = new Request.Builder()
                     .url("https://github.com/login/oauth/access_token")
-                    .post(body)
+                    .post(bo)
                     .build();
         try (Response response = client.newCall(request).execute()) {
             String string = response.body().string();
@@ -38,6 +38,7 @@ public class GithubProvider {
         try{
             Response response = client.newCall(request).execute();
             String string = response.body().string();
+            //System.out.println("%%%" + string);
             GithubUser githubUser = JSON.parseObject(string, GithubUser.class);
             return githubUser;
         }catch (IOException e){
