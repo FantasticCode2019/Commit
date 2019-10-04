@@ -61,7 +61,6 @@
             <artifactId>okhttp</artifactId>
             <version>3.14.1</version>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -69,6 +68,16 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>5.0.5</version>
+                <configuration>
+                    <url>jdbc:mysql://127.0.0.1:3306/community</url>
+                    <user>root</user>
+                    <password>996278yao</password>
+                </configuration>
             </plugin>
         </plugins>
     </build>

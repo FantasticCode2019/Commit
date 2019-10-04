@@ -5,13 +5,15 @@ import com.yyj.community.dto.GithubUser;
 import com.yyj.community.mapper.UserMapper;
 import com.yyj.community.model.User;
 import com.yyj.community.provider.GithubProvider;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 @Controller
@@ -30,10 +32,12 @@ public class AuthorizeController {
     @Value("${github.redirect.uri}")
     String redirectUri;
 
+    //
     @RequestMapping("/callback")
     public String callback(@RequestParam(name="code") String code,
                            @RequestParam(name="state") String state,
-                           HttpServletRequest request){
+                           HttpServletResponse response){
+        //String code = "123456789";
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_id(clientId);
         accessTokenDTO.setClient_secret(clientSecret);
@@ -51,10 +55,12 @@ public class AuthorizeController {
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
             userMapper.insert(user);
-            request.getSession().setAttribute("user",githubUser);
+            //写入cookie和session
+            response.addCookie(new Cookie("token",token));
             return "redirect:/";
         }else{
             return "redirect:/";
         }
     }
 }
+
