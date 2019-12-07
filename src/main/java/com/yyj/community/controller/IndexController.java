@@ -1,47 +1,42 @@
 package com.yyj.community.controller;
 
+import com.yyj.community.cache.HotTagCache;
 import com.yyj.community.dto.PaginationDTO;
-import com.yyj.community.mapper.UserMapper;
-import com.yyj.community.model.User;
 import com.yyj.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
+/**
+ * Created by codedrinker on 2019/4/24.
+ */
 @Controller
 public class IndexController {
-    @Autowired
-    UserMapper userMapper;
 
     @Autowired
-    QuestionService questionService;
+    private QuestionService questionService;
 
-    @RequestMapping("/")
-    public String index(HttpServletRequest request,
-                        Model model,
+    @Autowired
+    private HotTagCache hotTagCache;
+
+    @GetMapping("/")
+    public String index(Model model,
                         @RequestParam(name = "page", defaultValue = "1") Integer page,
-                        @RequestParam(name = "size", defaultValue = "5") Integer size) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) return "index";
-        for (Cookie cookie : cookies) {
-            System.out.println(cookie.getName() + "=" + cookie.getValue());
-            if ((cookie.getName()).equals("token")) {
-                String token = cookie.getValue();
-                // System.out.println("second&&&&&&" + token);
-                User user = userMapper.findUserByToken(token);
-                if (user != null)
-                    request.getSession().setAttribute("user", user);
-                break;
-            }
-        }
-        PaginationDTO pagination = questionService.getList(page, size);
-        //model.addObject();
+                        @RequestParam(name = "size", defaultValue = "10") Integer size,
+                        @RequestParam(name = "search", required = false) String search,
+                        @RequestParam(name = "tag", required = false) String tag,
+                        @RequestParam(name = "sort", required = false) String sort) {
+        PaginationDTO pagination = questionService.list(search, tag, sort, page, size);
+        List<String> tags = hotTagCache.getHots();
         model.addAttribute("pagination", pagination);
+        model.addAttribute("search", search);
+        model.addAttribute("tag", tag);
+        model.addAttribute("tags", tags);
+        model.addAttribute("sort", sort);
         return "index";
     }
 }

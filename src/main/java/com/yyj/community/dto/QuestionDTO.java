@@ -3,17 +3,20 @@ package com.yyj.community.dto;
 import com.yyj.community.model.User;
 import lombok.Data;
 
+/**
+ * Created by codedrinker on 2019/5/7.
+ */
 @Data
 public class QuestionDTO {
-    private Integer id;
+    private Long id;
     private String title;
     private String description;
+    private String tag;
     private Long gmtCreate;
     private Long gmtModified;
-    private Integer commentCount;
+    private Long creator;
     private Integer viewCount;
+    private Integer commentCount;
     private Integer likeCount;
-    private String tag;
-    private Integer creator;
     private User user;
 }
